@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Flashcards</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+   
+</head>
+<body>
+    <div class="main min-h-screen w-full bg-[#e8f1f2] gap-5 p-25 font-[Roboto_Slab]">
+        <div class="heading w-full px-56">
+            <h1 class="text-3xl font-bold mb-8 text-[#264653]">Edit Flashcards</h1>
+        </div>
+        <form class="flex flex-col gap-5 items-center justify-center" action="/generated-flashcards" method="post">
+            <% if (flashcards && flashcards.length) { %>
+                <% flashcards.forEach(function(card, idx) { %>
+                    <div class="flashcard w-[38rem] h-[20rem] bg-white rounded-lg shadow-lg ">
+                        <div class="flex flex-col gap-2 w-full h-full rounded-lg p-4 relative" id="flashcard-<%= idx %>">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="font-semibold text-[#36454F]">Question <%= idx + 1 %></label>
+                                <button type="button" 
+                                    class="text-red-500 hover:text-red-600 delete-btn" 
+                                    data-index="<%= idx %>"
+                                    onclick="deleteFlashcard('<%= idx %>')">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                            </div>
+                            <input type="text" name="flashcards[<%= idx %>][question]" value="<%= card.question %>" class="rounded p-2 text-white bg-[#008B8B]" required />
+                            <label class="font-semibold mb-3 text-[#36454F]">Answer</label>
+                            <textarea name="flashcards[<%= idx %>][answer]" class="rounded p-2 text-white resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#008B8B]" style="height: 100px; max-height: 100px;" required><%= card.answer %></textarea>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="text-white">No flashcards to edit.</div>
+            <% } %>
+            <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg self-end">Save</button>
+        </form>
+    </div>
+    <script src="/javascripts/edit.js"></script>
+</body>
+</html>

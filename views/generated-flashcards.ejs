@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Flashcards</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body theme="salmon" class="font-[Roboto_Slab] font-bold">
+   <div class="main w-full h-screen">
+    <div class="nav w-full h-[5rem] flex items-center justify-end px-10">
+        <button onclick="downloadPDF()" class="w-[2rem] h-[2rem] bg-white rounded-full flex items-center justify-center fixed cursor-pointer hover:bg-gray-100 transition-colors">
+            <i class="ri-download-line"></i>
+        </button>
+    </div>
+    <% const colors = ["peach", "salmon", "mint", "cyan"] %>
+    <% if(flashcards && flashcards.length > 0) { %>
+        <% flashcards.forEach(function(flashcard, idx) { %>
+            <div class="section w-full h-screen flex items-center justify-center" data-color="<%= colors[idx%colors.length] %>">
+                <div class="flashcard w-[600px] h-[400px] bg-white cursor-pointer rounded-xl" 
+                     data-question="<%= flashcard.question %>" 
+                     data-answer="<%= flashcard.answer %>">
+                    <div class="front relative w-full h-full backface-hidden flex flex-col items-center justify-center">
+                            <div class="heading absolute top-[10%] text-3xl font-bold">
+                                <h1>Question <%= idx + 1 %></h1>
+                            </div>
+                            <div class="content text-[1.3rem] px-5 text-center">
+                                <h3><%= flashcard.question %></h3>
+                            </div>
+                    </div>
+                    <div class="back relative w-full h-full backface-hidden rotate-y-180 flex flex-col items-center justify-center">
+                            <div class="heading absolute top-[10%] text-3xl font-bold">
+                                <h1>Answer <%= idx + 1 %></h1>
+                            </div>
+                            <div class="content text-[1.3rem] px-5 text-center">
+                                <h3><%= flashcard.answer %></h3>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="/javascripts/generated-flashcards.js"></script>
+</html> 

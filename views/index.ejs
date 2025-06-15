@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=LXGW+Marker+Gothic&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main w-full h-screen bg-black flex flex-col justify-center items-center">
+        <div class="heading">
+            <h1 class="text-[#FFFFED] selection:bg-[#11444d] text-5xl font-bold absolute top-[20%] left-1/2 -translate-x-1/2 font-[LXGW_Marker_Gothic]">Generate Flashcards</h1>
+        </div>
+        
+        <!-- Flash Messages -->
+        <% if(error_msg && error_msg.length > 0) { %>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 transform bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded " role="alert">
+                <span class="block sm:inline"><%= error_msg %></span>
+            </div>
+        <% } %>
+        <% if(success_msg && success_msg.length > 0) { %>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 transform bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded " role="alert">
+                <span class="block sm:inline"><%= success_msg %></span>
+            </div>
+        <% } %>
+
+        <div class="input w-full flex justify-center items-center">
+            <form class="flex items-center justify-center gap-5 max-w-3xl w-full mx-auto" action="/edit" method="post">
+                <div class="relative w-full flex items-center">
+                    <textarea required
+                        class="w-full min-h-[52px] max-h-[200px] py-5 px-4 pr-[170px] rounded-lg bg-gray-900 text-white resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter a topic, paragraph, or concept to generate flashcards..."
+                        rows="1"
+                        onInput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" name="text"
+                    ></textarea>
+                    <button type="submit" class="absolute right-5 top-1/2 w-[1.8rem] h-[1.8rem] rounded-full flex items-center justify-center -translate-y-1/2 bg-blue-500 text-white px-2 py-2 hover:bg-blue-600 transition-colors cursor-pointer">
+                        <i class="ri-arrow-right-line text-2xl"></i>
+                    </button>   
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+:root{
+    --salmon: #ef9d71;
+    --peach: #ffe5b4;
+    --dpeach: #ff6f61;
+    --dsalmon: #70332c;
+    --cyan: #AEDEE0;
+    --dcyan: #11444d;
+    --mint: #d1ffe7;
+    --dmint: #008080; 
+}
+
+body{
+    transition: background-color 0.3s ease;
+}
+
+body[theme="peach"]{
+    background-color: var(--peach);
+}
+
+body[theme="peach"] .section{
+    color: var(--dpeach);
+}
+
+/* body[theme="peach"] .section *{
+    border-color: #fff
+} */
+
+
+body[theme="salmon"]{
+    background-color: var(--salmon);
+}
+
+body[theme="salmon"] .section{
+    color: var(--dsalmon);
+}
+
+body[theme="mint"]{
+    background-color: var(--mint);
+}
+
+body[theme="mint"] .section{
+    color: var(--dmint);
+}
+
+
+body[theme="cyan"]{
+    background-color:var(--cyan);
+}
+
+body[theme="cyan"] .section{
+    color: var(--dcyan);
+}
