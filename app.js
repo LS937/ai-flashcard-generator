@@ -42,6 +42,11 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
+app.get("/edit", (req, res) => {
+    const flashcards = req.session.flashcards || [];
+    res.render('edit', { flashcards: flashcards });
+});
+
 app.post("/edit", async (req, res) => {
     try {
         const { text } = req.body;
@@ -100,22 +105,24 @@ app.post("/generated-flashcards", (req, res) => {
 app.post("/delete-flashcard", (req, res) => {
     try {
         const { index } = req.body;
-        if (typeof index !== 'number') {
-            req.flash('error_msg', 'Invalid index');
-            return res.redirect('/');
+        if (typeof index !== 'number' || index < 0) {
+            return res.json({ success: false, message: 'Invalid index' });
         }
 
         const flashcards = req.session.flashcards || [];
+        
+        if (index >= flashcards.length) {
+            return res.json({ success: false, message: 'Flashcard not found' });
+        }
         
         flashcards.splice(index, 1);
         
         req.session.flashcards = flashcards;
         
-        res.redirect('/edit');
+        res.json({ success: true, message: 'Flashcard deleted successfully' });
     } catch (error) {
         console.error("Error deleting flashcard:", error);
-        req.flash('error_msg', error.message || 'Failed to delete flashcard');
-        res.redirect('/');
+        res.json({ success: false, message: error.message || 'Failed to delete flashcard' });
     }
 });
 
