@@ -57,94 +57,68 @@ document.querySelectorAll(".section")
 });
 
 
+
+
 function downloadPDF() {
-  const pdfContainer = document.createElement("div");
-  const flashcards = document.querySelectorAll(".flashcard");
-
-  flashcards.forEach((card, index) => {
-    const question = card.dataset.question;
-    const answer = card.dataset.answer;
-    const pageElement = document.createElement("div");
-
-    // --- START OF CHANGE ---
-
-    // Define the base styles for every page container
-    let pageStyle = `
-                width: 6in; 
-                height: 4in; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                box-sizing: border-box;
-            `;
-
-    // IMPORTANT: Add the page break style ONLY if it's NOT the last flashcard.
-    // This prevents the extra blank page at the end or between pages.
-    if (index < flashcards.length - 1) {
-      pageStyle += `page-break-after: always;`;
-    }
-
-    pageElement.style.cssText = pageStyle;
-
-    // --- END OF CHANGE ---
-
-    // The inner content of the card remains the same
-    pageElement.innerHTML = `
-                <div style="
-                    width: 95%; 
-                    height: 95%; 
-                    border: 2px solid #333; 
-                    border-radius: 15px; 
-                    background-color: white; 
-                    padding: 20px; 
-                    display: flex; 
-                    flex-direction: column; 
-                    justify-content: center; 
-                    align-items: center; 
-                    text-align: center;
-                    box-sizing: border-box;
-                    font-family: 'Roboto Slab', serif;
-                ">
-                    <div style="margin-bottom: 20px;">
-                        <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #333;">Question ${
-                          index + 1
-                        }</h2>
-                        <p style="font-size: 1.1rem; color: #444; line-height: 1.5;">${question}</p>
-                    </div>
-                    
-                    <div style="border-top: 1px dashed #ccc; width: 80%; margin: 15px 0;"></div>
-
-                    <div>
-                        <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #333;">Answer ${
-                          index + 1
-                        }</h2>
-                        <p style="font-size: 1.1rem; color: #444; line-height: 1.5;">${answer}</p>
-                    </div>
-                </div>
-            `;
-
-    pdfContainer.appendChild(pageElement);
+  // Ensure jsPDF is loaded
+  if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
+    alert('jsPDF library is not loaded. Please include jsPDF in your HTML.');
+    return;
+  }
+  const jsPDFConstructor = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+  const doc = new jsPDFConstructor({
+    orientation: 'landscape',
+    unit: 'in',
+    format: [6, 4],
+    compress: true
   });
 
-  // PDF options remain the same
-  const opt = {
-    margin: 0,
-    filename: "flashcards.pdf",
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      letterRendering: true,
-    },
-    jsPDF: {
-      unit: "in",
-      format: [6, 4],
-      orientation: "landscape",
-      compress: true,
-    },
-    pagebreak: { mode: ["css", "legacy"] },
-  };
+  const flashcards = document.querySelectorAll('.flashcard');
+  flashcards.forEach((card, index) => {
+    if (index > 0) doc.addPage();
+    // Card box dimensions
+    const boxX = 0.25, boxY = 0.25, boxW = 5.5, boxH = 3.5;
+    // Draw box
+    doc.setDrawColor(51, 51, 51);
+    doc.setLineWidth(0.05);
+    doc.roundedRect(boxX, boxY, boxW, boxH, 0.2, 0.2, 'S');
+    // Fill background
+    doc.setFillColor(255,255,255);
+    doc.rect(boxX, boxY, boxW, boxH, 'F');
 
-  html2pdf().set(opt).from(pdfContainer).save();
+    // Title: Question
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(51,51,51);
+    doc.text(`Question ${index + 1}`, boxX + boxW/2, boxY + 0.6, {align: 'center'});
+
+    // Question text
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(13);
+    doc.setTextColor(68,68,68);
+    const question = card.dataset.question || '';
+    let qLines = doc.splitTextToSize(question, boxW - 0.5);
+    doc.text(qLines, boxX + boxW/2, boxY + 1.0, {align: 'center'});
+
+    // Divider
+    doc.setDrawColor(200,200,200);
+    doc.setLineWidth(0.01);
+    doc.line(boxX + 0.5, boxY + 1.5, boxX + boxW - 0.5, boxY + 1.5, 'D');
+
+    // Title: Answer
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(51,51,51);
+    doc.text(`Answer ${index + 1}`, boxX + boxW/2, boxY + 2.0, {align: 'center'});
+
+    // Answer text
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(13);
+    doc.setTextColor(68,68,68);
+    const answer = card.dataset.answer || '';
+    let aLines = doc.splitTextToSize(answer, boxW - 0.5);
+    doc.text(aLines, boxX + boxW/2, boxY + 2.4, {align: 'center'});
+  });
+
+  doc.save('flashcards.pdf');
 }
